@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jazz-records-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jazz-records
+  template:
+    metadata:
+      labels:
+        app: jazz-records
+    spec:
+      initContainers:
+        - name: jazz-records-init
+          image: jazz-records-init
+      containers:
+        - name: jazz-records
+          image: jazz-records
+          imagePullPolicy: IfNotPresent
+          envFrom:
+          - configMapRef:
+              name: jazz-records-config
+          ports:
+          - containerPort: 8080

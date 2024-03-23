@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jazz-records-config
+data:
+  DBUSER: root
+  DBPASS: password
+  DBHOST: mariadb
+  DBPORT: "3306"
+  DBNAME: recordings

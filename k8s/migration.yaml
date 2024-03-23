@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jazz-records-migration-job  
+spec:
+  ttlSecondsAfterFinished: 0
+  template:
+    spec:
+      containers:
+      - name: jazz-records-migrations
+        image: jazz-records-migrations
+        imagePullPolicy: IfNotPresent
+        command: ["migrate", "-path=/migrations", "-database=mysql://root:password@tcp(mariadb:3306)/recordings", "up"]
+      restartPolicy: Never
+
