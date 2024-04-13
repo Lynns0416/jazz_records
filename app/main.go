@@ -91,8 +91,14 @@ func getAllAlbums(c *gin.Context) {
 		}
 		albums = append(albums, alb)
 	}
+
 	if err := rows.Err(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("allAlbums %v", err)})
+		return
+	}
+
+	if len(albums) == 0 {
+		c.JSON(http.StatusOK, struct{}{})
 		return
 	}
 
