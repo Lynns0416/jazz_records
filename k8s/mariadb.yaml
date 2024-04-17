@@ -20,8 +20,8 @@ spec:
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
-            configMapKeyRef:
-              name: jazz-records-config
+            secretKeyRef:
+              name: jazz-records-secret
               key: DBPASS
         volumeMounts:
         - name: mariadb-storage
@@ -30,17 +30,6 @@ spec:
       - name: mariadb-storage
         persistentVolumeClaim:
           claimName: mariadb-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mariadb-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service

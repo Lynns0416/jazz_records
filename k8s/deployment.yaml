@@ -14,12 +14,14 @@ spec:
     spec:
       initContainers:
         - name: jazz-records-init
-          image: jazz-records-init
+          image: jazz-records-init:v0.1.0
       containers:
         - name: jazz-records
-          image: jazz-records
+          image: jazz-records:v0.1.0
           imagePullPolicy: IfNotPresent
           envFrom:
+          - secretRef:
+              name: jazz-records-secret
           - configMapRef:
               name: jazz-records-config
           ports:

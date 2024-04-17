@@ -74,28 +74,6 @@ func main() {
 	router.Run("0.0.0.0:8080")
 }
 
-func albumsByArtist(name string) ([]Album, error) {
-	var albums []Album
-
-	rows, err := db.Query("SELECT * FROM albums WHERE artist = ?", name)
-	if err != nil {
-		return nil, fmt.Errorf("albumsByArtist %q: %v", name, err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var alb Album
-		if err := rows.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price); err != nil {
-			return nil, fmt.Errorf("albumsByArtist %q: %v", name, err)
-		}
-		albums = append(albums, alb)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("albumsByArtist %q, %v", name, err)
-	}
-	return albums, nil
-}
-
 func getAllAlbums(c *gin.Context) {
 	var albums []Album
 	rows, err := db.Query("SELECT * FROM albums")
@@ -113,8 +91,14 @@ func getAllAlbums(c *gin.Context) {
 		}
 		albums = append(albums, alb)
 	}
+
 	if err := rows.Err(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("allAlbums %v", err)})
+		return
+	}
+
+	if len(albums) == 0 {
+		c.JSON(http.StatusOK, struct{}{})
 		return
 	}
 
@@ -129,7 +113,7 @@ func getAlbumsByArtist(c *gin.Context) {
 		return
 	}
 
-	albums, err := albumsByArtist(artist)
+	albums, err := privateAlbumsByArtist(artist)
 	if albums == nil || err != nil {
 		message := fmt.Sprintf("album of artist = %s not found.", artist)
 		c.JSON(http.StatusNotFound, gin.H{"message": message})
@@ -139,6 +123,28 @@ func getAlbumsByArtist(c *gin.Context) {
 	if albums != nil {
 		c.IndentedJSON(http.StatusOK, albums)
 	}
+}
+
+func privateAlbumsByArtist(name string) ([]Album, error) {
+	var albums []Album
+
+	rows, err := db.Query("SELECT * FROM albums WHERE artist = ?", name)
+	if err != nil {
+		return nil, fmt.Errorf("privateAlbumsByArtist %q: %v", name, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var alb Album
+		if err := rows.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price); err != nil {
+			return nil, fmt.Errorf("privateAlbumsByArtist %q: %v", name, err)
+		}
+		albums = append(albums, alb)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("privateAlbumsByArtist %q, %v", name, err)
+	}
+	return albums, nil
 }
 
 func postAlbum(c *gin.Context) {
