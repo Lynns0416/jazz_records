@@ -20,8 +20,8 @@ spec:
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
-            configMapKeyRef:
-              name: jazz-records-config
+            secretKeyRef:
+              name: jazz-records-secret
               key: DBPASS
         volumeMounts:
         - name: mariadb-storage
