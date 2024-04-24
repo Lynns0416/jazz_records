@@ -9,26 +9,37 @@ This project is for my own learning purpose of kubernetes and the tools.
 - [Install & setup kubernetes with tools](https://kubernetes.io/docs/setup/)
 - [Install & setup skaffold](https://skaffold.dev/docs/quickstart/)
 
-### Secrets
-All the secrets are defined in [secrets.yaml.example](k8s/secrets.yaml.example).
-
-Copy it as `k8s/secrets.yaml`
-
-```bash
-cp k8s/secrets.yaml.example k8s/secrets.yaml
-```
-
-# Run
+# Run local app
 Start minikube first. (Set profile if necessary.)
 
+### start minikube
 ```bash
 minikube -p jazz-records start
 eval $(minikube -p jazz-records docker-env)
 ```
 
+### create volume and secrets
+
+Existing files are
 ```bash
-skaffold dev
+$ tree k8s/local
+k8s/local
+├── secrets.yaml
+└── volume.yaml
+
+1 drectory, 2 files
 ```
+
+create local specific resources
+```bash
+kubectl apply -f k8s/local
+```
+
+Finally, run app by skaffold command
+```bash
+skaffold dev -p local
+```
+
 
 Then, in another terminal pane / tab / window,
 

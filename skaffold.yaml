@@ -13,8 +13,12 @@ build:
     - image: jazz-records-migrations
       docker:
         dockerfile: k8s/migration/Dockerfile
-manifests:
-  rawYaml:
-  - k8s/*.yaml
+profiles:
+- name: local
+  manifests:
+    kustomize:
+      paths:
+        - k8s/overlays/local
 deploy:
   kubectl: {}
+
