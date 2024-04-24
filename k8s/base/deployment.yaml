@@ -14,10 +14,10 @@ spec:
     spec:
       initContainers:
         - name: jazz-records-init
-          image: jazz-records-init:v0.1.0
+          image: jazz-records-init
       containers:
         - name: jazz-records
-          image: jazz-records:v0.1.0
+          image: jazz-records
           imagePullPolicy: IfNotPresent
           envFrom:
           - secretRef:
